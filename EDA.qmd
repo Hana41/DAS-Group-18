@@ -1,0 +1,97 @@
+---
+title: "DAS Project2"
+author: "Group18"
+number-sections: true
+format: 
+  html:
+    embed-resources: true
+    code-tools: true
+  pdf: default
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(tidyverse)
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(vcd)
+```
+
+```{r}
+#load the data
+shelter_01 <- read_csv("dataset18.csv", 
+                       col_types = cols(
+                         animal_type = col_character(),
+                         intake_type = col_character(),
+                         outcome_type = col_character(),
+                         chip_status = col_character(),
+                         month = col_double(),
+                         year = col_double(),
+                         time_at_shelter = col_double()
+                         ))
+```
+
+```{r}
+#Checking for missing value
+any_na <- apply(shelter_01, 2, function(x) any(is.na(x))) 
+any_na  
+
+total_na <- sum(is.na(shelter_01))
+total_na
+```
+
+```{r}
+#Converting a string variable to a factor type and make a summary statistics
+shelter_01$animal_type <- as.factor(shelter_01$animal_type)
+shelter_01$intake_type <- as.factor(shelter_01$intake_type) 
+shelter_01$outcome_type <- as.factor(shelter_01$outcome_type) 
+shelter_01$chip_status <- as.factor(shelter_01$chip_status) 
+
+summary(shelter_01)
+```
+
+```{r}
+#Converting shelter_01 to dataframe
+shelter_02 <- as.data.frame(shelter_01)
+summary(shelter_02)
+```
+
+```{r}
+correlation <- cor(shelter_02[, c("month", "year", "time_at_shelter")])
+correlation
+```
+
+```{r}
+chisq_animal_intake <- chisq.test(table(shelter_02$animal_type, shelter_02$intake_type))
+chisq_animal_outcome <- chisq.test(table(shelter_02$animal_type, shelter_02$outcome_type))
+chisq_animal_chip <- chisq.test(table(shelter_02$animal_type, shelter_02$chip_status))
+chisq_outcome_intake <- chisq.test(table(shelter_02$outcome_type, shelter_02$intake_type))
+chisq_outcome_chip <- chisq.test(table(shelter_02$outcome_type, shelter_02$chip_status))
+chisq_intake_chip <- chisq.test(table(shelter_02$intake_type, shelter_02$chip_status))
+
+chisq_animal_intake
+chisq_animal_outcome
+chisq_animal_chip
+chisq_outcome_intake
+chisq_outcome_chip
+chisq_intake_chip
+```
+
+```{r}
+manova_result <- manova(cbind(time_at_shelter, animal_type, intake_type, outcome_type, chip_status) ~ 1, data=shelter_02)
+manova_result
+```
+
+```{r}
+glm_model <- glm(time_at_shelter ~ intake_type + outcome_type + chip_status, 
+                 data = shelter_02, 
+                 family = gaussian(link = "identity"))
+
+summary(glm_model)
+
+```
