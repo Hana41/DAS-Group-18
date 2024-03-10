@@ -64,6 +64,8 @@ summary(shelter_02)
 ```{r}
 correlation <- cor(shelter_02[, c("month", "year", "time_at_shelter")])
 correlation
+library(corrplot)
+corrplot(correlation, method="circle")
 ```
 
 ```{r}
@@ -88,10 +90,18 @@ manova_result
 ```
 
 ```{r}
-glm_model <- glm(time_at_shelter ~ intake_type + outcome_type + chip_status, 
-                 data = shelter_02, 
-                 family = gaussian(link = "identity"))
+data_intake_type <- data.frame(category = factor(shelter_02$intake_type))
+encoded_data_intake_type <- model.matrix(~ category - 1, data_intake_type)
 
-summary(glm_model)
+data_outcome_type <- data.frame(category = factor(shelter_02$outcome_type))
+encoded_data_outcome_type <- model.matrix(~ category - 1, data_outcome_type)
 
+data_chip_status <- data.frame(category = factor(shelter_02$chip_status))
+encoded_data_chip_status <- model.matrix(~ category - 1, data_chip_status)
+
+data_with_dummies <- cbind(data, encoded_data_intake_type, encoded_data_outcome_type, encoded_data_chip_status)
+
+model <- glm(data_with_dummies$time_at_shelter ~ data_with_dummies$intake_type + data_with_dummies$outcome_type + data_with_dummies$chip_status, data = data_with_dummies, family = gaussian)
+
+summary(model)
 ```
