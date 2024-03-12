@@ -1,6 +1,6 @@
 ---
-title: "DAS Project2"
-author: "Group18"
+title: "DAS Project2 Group18"
+author: " Kejin HAN, Yubin Lyu, Jiaxuan Miao, Chaoyi Zhang and Peihua ZHONG"
 number-sections: true
 format: 
   html:
@@ -53,7 +53,6 @@ summary(shelter_02)
 
 ```{r}
 hist(shelter_02$time_at_shelter)
-hist(data$time_at_shelter)
 ```
 
 ```{r}
@@ -67,7 +66,6 @@ model_poi <- step(glm_model_poi)
 ```{r}
 library(MASS)
 glm_model_nb <- glm.nb(time_at_shelter ~ animal_type + month + year + intake_type + outcome_type + chip_status, data = shelter_02)
-glm_model_nb <- glm.nb(data$time_at_shelter ~ data$animal_type + data$month + data$year + data$intake_type + data$outcome_type + data$chip_status, data = data)
 summary(glm_model_nb)
 model_nb <- step(glm_model_nb)
 ```
