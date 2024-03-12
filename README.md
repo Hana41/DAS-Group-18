@@ -19,11 +19,3 @@ The datasets used in this analysis consist of information recorded for each anim
 ## Analysis Method
 
 The analysis is conducted using a Generalised Linear Model (GLM). GLM allows us to model the relationship between the response variable (Time_at_Shelter) and the predictor variables (Animal_type, Month, Year, Intake_type, Outcome_type, and Chip_Status).
-
-## Results Summary
-
-xxxxxxxxxxxxxxxxxxx
-
-## Conclusion
-
-In conclusion, xxxxxxxxx.
