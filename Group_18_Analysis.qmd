@@ -1,0 +1,71 @@
+---
+title: "DAS Project2"
+author: "Group18"
+number-sections: true
+format: 
+  html:
+    embed-resources: true
+    code-tools: true
+  pdf: default
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(tidyverse)
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(vcd)
+```
+
+```{r}
+#load the data
+shelter_01 <- read.csv("dataset18.csv")
+```
+
+```{r}
+#Checking for missing value
+any_na <- apply(shelter_01, 2, function(x) any(is.na(x))) 
+any_na  
+
+total_na <- sum(is.na(shelter_01))
+total_na
+```
+
+```{r}
+#Converting a string variable to a factor type and make a summary statistics
+shelter_01$animal_type <- as.factor(shelter_01$animal_type)
+shelter_01$intake_type <- as.factor(shelter_01$intake_type) 
+shelter_01$outcome_type <- as.factor(shelter_01$outcome_type) 
+shelter_01$chip_status <- as.factor(shelter_01$chip_status)
+summary(shelter_01)
+```
+
+```{r}
+#Converting shelter_01 to dataframe
+shelter_02 <- as.data.frame(shelter_01)
+summary(shelter_02)
+```
+
+```{r}
+hist(shelter_02$time_at_shelter)
+```
+
+```{r}
+glm_model_poi <- glm(time_at_shelter ~ year + month + animal_type + intake_type 
+                   + outcome_type + chip_status, data = shelter_02, 
+                 family = poisson())
+summary(glm_model_poi)
+model_poi <- step(glm_model_poi)
+```
+
+```{r}
+library(MASS)
+glm_model_nb <- glm.nb(time_at_shelter ~ animal_type + month + year + intake_type + outcome_type + chip_status, data = shelter_02)
+summary(glm_model_nb)
+model_nb <- step(glm_model_nb)
+```
