@@ -1,6 +1,6 @@
 ---
 title: "DAS Project2 Group18"
-author: " Kejin HAN, Yubin Lyu, Jiaxuan Miao, Chaoyi Zhang and Peihua ZHONG"
+author: " Kejin Han, Yubin Lyu, Jiaxuan Miao, Chaoyi Zhang and Peihua Zhong"
 number-sections: true
 format: 
   html:
