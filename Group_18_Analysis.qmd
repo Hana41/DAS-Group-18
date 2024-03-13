@@ -52,8 +52,15 @@ summary(shelter_02)
 ```
 
 ```{r}
-hist(shelter_02$time_at_shelter)
+# Histogram analysis of the dependent variable
+hist(shelter_02$time_at_shelter, 
+     breaks = seq(min(shelter_02$time_at_shelter), 
+                  max(shelter_02$time_at_shelter) + 1, by = 1))
 ```
+
+The significance of finding out whether the dependent variable is continuous or count is in choosing the appropriate statistical method and model for the analysis. If the histogram shows a continuous and smooth distribution, it usually indicates that the dependent variable is continuous. If the histogram shows a discrete and spaced distribution, it usually indicates that the dependent variable is of the count type.
+
+From the results, it can be known that histogram is showing interval shape and overall is not smooth. Therefore the dependent variable is count type. Count variables are usually analysed using Poisson regression and negative binomial distribution regression. Therefore, we have attempted to use Poisson distribution and negative binomial distribution regression for the subsequent Generalized Linear Model respectively.
 
 ```{r}
 glm_model_poi <- glm(time_at_shelter ~ year + month + animal_type + intake_type 
@@ -63,9 +70,17 @@ summary(glm_model_poi)
 model_poi <- step(glm_model_poi)
 ```
 
+The stepwise analysis of the model was carried out while performing the Poisson distribution. The initial model had an AIC value of 9670.31. In further steps, the independent variables such as year, month, animal_type, chip_status, intake_type, and outcome_type were gradually deleted but these deletion operations all lead to an increase in the AIC value, indicating that deleting these variables makes the model worse. Therefore, it can be seen that the best model is when no independent variables are added or removed, which corresponds to an AIC value of 9670.3 and a deviation of 6544.7.
+
 ```{r}
 glm_model_nb <- glm.nb(time_at_shelter ~ year + month + animal_type + intake_type 
                    + outcome_type + chip_status, data = shelter_02)
 summary(glm_model_nb)
 model_nb <- step(glm_model_nb)
 ```
+
+We then tried the negative binomial distribution and performed a stepwise analysis of the model. The initial model had an AIC value of 6250.25. In the iteration, the year and month variables were gradually removed and each step resulted in a decrease in the AIC value. The final model contains independent variables such as animal_type, intake_type, outcome_type and chip_status.
+
+By comparing the results of model_poi and model_nb, we can see the difference in the performance of the two models in the stepwise regression analysis. model_nb model obtained a lower AIC value by gradually deleting the year and month variables when selecting the variables, indicating that this model fits the data better, while model_poi model did not find that it could be further optimised during the stepwise regression process. model_poi model did not find any variables that could further optimise the model, so it retained all the independent variables, but with a relatively high AIC value.
+
+By comparing the deviation values of the two models, model_nb has a final deviation value of 1312.6 and model_poi has a final deviation value of 6544.7. We can find that model_nb has a smaller deviation value and fits the data better than model_poi. Therefore, based on the comparison of deviation values, model_nb model is more suitable for interpreting and predicting the data.
