@@ -12,7 +12,6 @@ editor_options:
 ---
 
 ```{r}
-#| echo: false
 #| warning: false
 #| message: false
 library(tidyverse)
@@ -20,6 +19,7 @@ library(dplyr)
 library(readr)
 library(ggplot2)
 library(vcd)
+library(MASS)
 ```
 
 ```{r}
@@ -64,8 +64,8 @@ model_poi <- step(glm_model_poi)
 ```
 
 ```{r}
-library(MASS)
-glm_model_nb <- glm.nb(time_at_shelter ~ animal_type + month + year + intake_type + outcome_type + chip_status, data = shelter_02)
+glm_model_nb <- glm.nb(time_at_shelter ~ year + month + animal_type + intake_type 
+                   + outcome_type + chip_status, data = shelter_02)
 summary(glm_model_nb)
 model_nb <- step(glm_model_nb)
 ```
