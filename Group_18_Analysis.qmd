@@ -1,7 +1,7 @@
 ---
 title: "DAS Project2 Group18"
 author: " Kejin Han, Yubin Lyu, Jiaxuan Miao, Chaoyi Zhang and Peihua Zhong"
-number-sections: true
+number-sections: false
 format: 
   html:
     embed-resources: true
@@ -22,6 +22,8 @@ library(vcd)
 library(MASS)
 ```
 
+## **Data Pre-processing**
+
 ```{r}
 #load the data
 shelter_01 <- read.csv("dataset18.csv")
@@ -35,6 +37,8 @@ any_na
 total_na <- sum(is.na(shelter_01))
 total_na
 ```
+
+## Exploratory Analysis
 
 ```{r}
 #Converting a string variable to a factor type and make a summary statistics
@@ -60,7 +64,14 @@ hist(shelter_02$time_at_shelter,
 
 The significance of finding out whether the dependent variable is continuous or count is in choosing the appropriate statistical method and model for the analysis. If the histogram shows a continuous and smooth distribution, it usually indicates that the dependent variable is continuous. If the histogram shows a discrete and spaced distribution, it usually indicates that the dependent variable is of the count type.
 
-From the results, it can be known that histogram is showing interval shape and overall is not smooth. Therefore the dependent variable is count type. Count variables are usually analysed using Poisson regression and negative binomial distribution regression. Therefore, we have attempted to use Poisson distribution and negative binomial distribution regression for the subsequent Generalized Linear Model respectively.
+From the results, it can be known that histogram is showing interval shape and overall is not smooth. Therefore, the dependent variable is count variables. Count variable is usually analysed using Poisson regression and negative binomial distribution regression. Therefore, we have attempted to use Poisson distribution and negative binomial distribution regression for the subsequent Generalized Linear Model respectively.
+
+```{r}
+column_variance <- var(shelter_02$time_at_shelter)
+column_variance
+```
+
+## Formal Analysis
 
 ```{r}
 glm_model_poi <- glm(time_at_shelter ~ year + month + animal_type + intake_type 
@@ -84,3 +95,9 @@ We then tried the negative binomial distribution and performed a stepwise analys
 By comparing the results of model_poi and model_nb, we can see the difference in the performance of the two models in the stepwise regression analysis. model_nb model obtained a lower AIC value by gradually deleting the year and month variables when selecting the variables, indicating that this model fits the data better, while model_poi model did not find that it could be further optimised during the stepwise regression process. model_poi model did not find any variables that could further optimise the model, so it retained all the independent variables, but with a relatively high AIC value.
 
 By comparing the deviation values of the two models, model_nb has a final deviation value of 1312.6 and model_poi has a final deviation value of 6544.7. We can find that model_nb has a smaller deviation value and fits the data better than model_poi. Therefore, based on the comparison of deviation values, model_nb model is more suitable for interpreting and predicting the data.
+
+Importantly, we choose the Negative Binomial distribution over the Poisson distribution for several reasons. Firstly, the duration of animals staying in shelters is influenced by a series of independent events, such as daily intake and release of animals, leading to uncertainty in trial counts. The Negative Binomial distribution is better suited to describe this uncertainty, as it can model the number of trials required to achieve a specified number of successes. Additionally, factors like animal type and shelter policies may result in unstable rates of stay duration, making the Poisson distribution less appropriate as it assumes a constant rate of event occurrence. Moreover, count data such as the number of days animals spend in a shelter often exhibit a situation where the variance exceeds the mean. This is accommodated by the Negative Binomial distribution, which allows for variance greater than the mean. Therefore, considering these factors, the Negative Binomial distribution provides a more flexible and accurate framework for modeling the duration of animal stays in shelters.
+
+## Conclusion
+
+Through this study, we can conclude that several factors significantly affect the length of animals' stay in the shelter and reduce it. The first factor is "automatically sent to the shelter by the original owner", the second factor is "returned by the original owner himself", and the third factor is "no chip was scanned on the animal". There is another factor, animal species, which we are not sure how it affects the length of time an animal spends in the habitat, but in our analysis it is significant. Consider each animal separately, and you will find they are insignificant. This may be due to uneven sample sizes, with some animals such as birds and livestock having too small a sample size. It is also possible that cats and dogs with large sample sizes were collinear in this study.
